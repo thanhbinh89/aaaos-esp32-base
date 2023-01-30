@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "driver/gpio.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,11 +16,16 @@ extern "C" {
 #define GPIO_OUTPUT_IO_1		(GPIO_NUM_15)
 #define GPIO_INPUT_IO_0			(GPIO_NUM_34)
 #define GPIO_INPUT_IO_1			(GPIO_NUM_35)
+#define GPIO_ETH_OSC_EN			(GPIO_NUM_17)
+#define GPIO_ETH_RST    		(GPIO_NUM_14)
+#define GPIO_ETH_MDC            (GPIO_NUM_23)
+#define GPIO_ETH_MDIO   		(GPIO_NUM_18)
 
 extern void outputInit();
 extern void setOutput0(int state);
 extern void setOutput1(int state);
 extern void inputInit();
+extern void ethIoInit();
 /*
  * System core function
  */

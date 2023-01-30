@@ -7,6 +7,9 @@
 
 #include "sys_io.h"
 
+#include "esp_err.h"
+#include "nvs_flash.h"
+
 /*****************************************************************************/
 /*  local declare
  */
@@ -179,5 +182,77 @@ int32_t console_relay(uint8_t *argv) {
 
 int32_t console_net(uint8_t *argv) {
 	(void) argv;
+	switch (*(argv + 4)) {
+	case 'w': {		
+		nvs_handle_t handle;
+		esp_err_t err;
+		char *ssid, *psk;
+
+		str_parser((char *)argv);
+		ssid = str_parser_get_attr(2);
+		psk = str_parser_get_attr(3);
+		if (strlen(ssid) < 32 || strlen(psk) < 64) {
+			SYS_PRINTF("set ssid[%d]: %s, psk[%d]: %s\n", strlen(ssid), ssid, strlen(psk), psk);
+		}
+		else {
+			SYS_PRINTF("string length invalid\n");
+			break;
+		}
+
+		// Open
+		err = nvs_open(NVS_WIFI_INFO, NVS_READWRITE, &handle);
+		if (err != ESP_OK) break;
+		err = nvs_set_blob(handle, "ssid", ssid, strlen(ssid));
+		if (err != ESP_OK) break;
+		err = nvs_set_blob(handle, "psk", psk, strlen(psk));
+		if (err != ESP_OK) break;
+		err = nvs_commit(handle);
+		if (err != ESP_OK) break;
+		// Close
+		nvs_close(handle);
+
+		AAATimerSet(AAA_TASK_NET_ID, NET_START_WIFI, NULL, 0, 1000, false);
+	}
+	break;
+
+	case 't': {
+		nvs_handle_t handle;
+		esp_err_t err;
+		int8_t type = *(argv + 6) - '0';
+
+		if (type > NET_TYPE_WIFI) break;
+
+		// Open
+		err = nvs_open(NVS_NET_CFG, NVS_READWRITE, &handle);
+		if (err != ESP_OK) break;
+		err = nvs_set_i8(handle, "type", type);
+		if (err != ESP_OK) break;
+		err = nvs_commit(handle);
+		if (err != ESP_OK) break;
+		// Close
+		nvs_close(handle);
+
+		SYS_PRINTF("set net_type: %d\n", type);
+	}
+		break;
+
+	case 'i': {
+		char *ips;
+		if (gotIP(&ips)) {
+			SYS_PRINTF("IP: %s\n", ips);
+		}
+		else {
+			SYS_PRINTF("IP: unknown\n");
+		}
+	}
+	break;
+
+	default:
+		SYS_PRINTF("net [opt]\nopt:\n");
+		SYS_PRINTF(" w ssid psk #set and save wifi info\n");
+		SYS_PRINTF(" t type #set net type (0: INT_ETH, 1: EXT_ETH, 2: WIFI)\n");
+		SYS_PRINTF(" i #get ip address\n");
+		break;
+	}
 	return 0;
 }

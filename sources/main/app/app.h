@@ -81,7 +81,7 @@ enum {
  */
 /*****************************************************************************/
 #define APP_FW_MODEL "AAAOS-ESP32-BASE"
-#define APP_FW_VERSION "0.0.2"
+#define APP_FW_VERSION "1.0.0"
 #ifdef DEBUG
 #define APP_FW_TITLE APP_FW_MODEL"-DEBUG"
 #else
@@ -90,16 +90,25 @@ enum {
 
 #define TB_SERVER "broker.hivemq.com"
 
-#define SERVER_MQTT_HOST TB_SERVER
-#define SERVER_MQTT_PORT 1883
-#define SERVER_TELEMETRY_PUB_TOPIC	"v1/devices/me/telemetry"
-#define SERVER_ATTRIBUTE_PUB_TOPIC	"v1/devices/me/attributes"
-#define SERVER_ATTRIBUTE_SUB_TOPIC	"v1/devices/me/attributes"
-#define SERVER_RPC_SUB_PREFIX_TOPIC	"v1/devices/me/rpc/request/"
-#define SERVER_RPC_SUB_TOPIC		SERVER_RPC_SUB_PREFIX_TOPIC "+"
-#define SERVER_RPC_PUB_PREFIX_TOPIC	"v1/devices/me/rpc/response/"
+#define SERVER_MQTT_HOST 				TB_SERVER
+#define SERVER_MQTT_PORT 				1883
+#define SERVER_TELEMETRY_PUB_TOPIC		"v1/devices/me/telemetry"
+#define SERVER_ATTRIBUTE_PUB_TOPIC		"v1/devices/me/attributes"
+#define SERVER_ATTRIBUTE_SUB_TOPIC		"v1/devices/me/attributes"
+#define SERVER_RPC_SUB_PREFIX_TOPIC		"v1/devices/me/rpc/request/"
+#define SERVER_RPC_SUB_TOPIC			SERVER_RPC_SUB_PREFIX_TOPIC "+"
+#define SERVER_RPC_PUB_PREFIX_TOPIC		"v1/devices/me/rpc/response/"
 
-#define HTTP_OTA_URI_FORMAT TB_SERVER "/api/v1/%s/firmware?title=%s&version=%s"
+#define HTTP_OTA_URI_FORMAT TB_SERVER 	"/api/v1/%s/firmware?title=%s&version=%s"
+
+#define NVS_WIFI_INFO					"WIFI_INFO"
+#define NVS_NET_CFG						"NET_CFG"
+
+enum {
+	NET_TYPE_INT_ETH,
+	NET_TYPE_SPI_ETH,
+	NET_TYPE_WIFI,
+};
 
 typedef struct tFOTAAssign {
 	char title[32];
